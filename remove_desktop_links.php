@@ -8,7 +8,7 @@ class remove_content {
   var $db_user = 'root';
   var $db_pass = '';
   var $db_name = 'desktop-new';
-  var $category_id = 0;
+  var $category_id = 0; // Leave 0 for all
 
   public function connect()
   {
@@ -26,7 +26,9 @@ class remove_content {
 
   public function process()
   {
-    $category_ids = $this->get_results( "SELECT `object_id` FROM `wp_term_relationships` WHERE `term_taxonomy_id` = $category->id" );
+    $query = "SELECT `object_id` FROM `wp_term_relationships`";
+    if($this->category_id < 1) $query .= "  WHERE `term_taxonomy_id` = $category->id";
+    $category_ids = $this->get_results( $query );
     foreach( $category_ids as &$category )
     {
       $category = $category['object_id'];
